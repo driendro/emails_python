@@ -21,11 +21,13 @@ smtp.login("tu@email.com", "tu_pass") # Tu usuario y tu contraseña
 
 for un_reg in registros:
 	msg = MIMEMultipart()
-	msg['Subject'] = 'Certificado de Gil'
+	msg['Subject'] = 'Certificado de Asistencia'
 	msg['From'] = 'quien_envia@email.com'
 	msg['To'] = '%s' %(un_reg[1])
 	# Esta es la parte textual:
-	part = MIMEText("Hola %s, %s: te paso un archivo interesante" %(un_reg[2], un_reg[3]))
+	part = MIMEText("Hola %s, %s: Muchas Gracias por Perticipar del Ciclo de Charlas Sobre lubricantes. Adjuntamos Certificado de Asistencia"
+			%(un_reg[2], un_reg[3])
+		       )
 	msg.attach(part)
 	# Esta es la parte binaria (puede ser cualquier extensión):
 	part = MIMEApplication(open("%s" %(un_reg[0]),"rb").read())
