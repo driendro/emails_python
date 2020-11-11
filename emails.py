@@ -23,8 +23,8 @@ puerto=587
 # Hotmail
 #servidor='smtp.office365.com'
 #puerto=587
-asunto='Certificado Seminario Lubricantes'
-mensaje= 'Se envia el certificado de asistencia al seminario "Conceptos Basicos de la Lubricacion" realizado en la UTN. Saludos Consejeros de Mecanica'
+asunto='Asunto'
+mensaje= 'Mensaje'
 
 # Crear una instancia del servidor para envio de correo (hacerlo una sola vez)
 # y logeas al servidor
