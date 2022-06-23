@@ -7,15 +7,15 @@ import pandas as pd
 
 # Alias
 # Alias de correo, normalemnte es el mismo que el smtp_user
-alias = 'correo@frlp.utn.edu.ar'
+alias = ''
 # el correo que usas para enviar los mensajes
-smtp_user = 'correo@frlp.utn.edu.ar'
-smtp_pass = 'Contraseña'  # password de la cuenta de correo
+smtp_user = ''
+smtp_pass = ''  # password de la cuenta de correo
 
 
 # Taplate en html, usando jinja2
 asunto = 'Asunto del email'
-archivo_template = 'path/al/template.html'
+archivo_template = 'template.html'
 
 
 def envio_correo(i, j, nombre, apellido, correo):
@@ -39,19 +39,19 @@ registros = pd.read_csv('path/al/archivo.csv', delimiter=';')
 # para testear, sobreescribe la lista registros por un dado
 # comentar para enviar el correo a los desinatarios
 # armar el diccionario con las columnas de CSV
-#dic= {
-#    'Titulo':'',
-#    'Nombre':'',
-#    'Apellido':'',
-#    'correo1': '',
-#    'correo2': ''
-#    }
-#registros=pd.DataFrame(dic,index=[0])
+# dic= {
+#     'Titulo':'',
+#     'Nombre':'',
+#     'Apellido':'',
+#     'correo1': '',
+#     'correo2': ''
+#     }
+# registros=pd.DataFrame(dic,index=[0])
 
 # Crear una instancia del servidor para envio de correo (hacerlo una sola vez)
 smtp = SMTP("smtp.office365.com", 587)
 
-i = 180  # contador de registros
+i = 0  # contador de registros
 j = len(registros)  # cantidad de registros
 k = 0  # contador de envios por ciclo
 k_max = 10  # maximo de envios por ciclo
@@ -82,7 +82,7 @@ while i < j:
     msg['Subject'] = asunto
     msg['From'] = alias
     # Armado del mensjae con jinga desde el template
-    temp = open(archivo_template).read()
+    temp = open(archivo_template, encoding="utf-8").read()
     dic = {
         'nombre': nombre,
         'apellido': apellido
