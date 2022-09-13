@@ -1,52 +1,40 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
+from email.mime.application import MIMEApplication
 from smtplib import SMTP
 from jinja2 import Template
 import pandas as pd
 
 # Alias
 # Alias de correo, normalemnte es el mismo que el smtp_user
-alias = ''
+alias = 'Juan Perez <juan.perez@dominio.com>'
 # el correo que usas para enviar los mensajes
-smtp_user = ''
-smtp_pass = ''  # password de la cuenta de correo
-
+smtp_user = 'juan.perez@dominio.com'
+smtp_pass = 'contraseña_correo'  # password de la cuenta de correo
 
 # Taplate en html, usando jinja2
-asunto = 'Asunto del email'
-archivo_template = 'template.html'
+asunto = 'De q trata el correo'
+archivo_template = 'html/template.html'
+db_csv = 'archivo.csv'
 
-
-def envio_correo(i, j, nombre, apellido, correo):
-    msg['To'] = '%s' % (correo)
+def envio_correo(i, j, nombre, apellido, correo1, correo2):
+    msg['To'] = '%s' % (correo1)
+    msg['Cc'] = '%s' % (correo2)
     try:
-        smtp.sendmail(msg['From'], msg['To'], msg.as_string())
-        s = (i, j, nombre, apellido, 'ok', correo)
+        smtp.sendmail(msg['From'], (msg['To'], msg['Cc']), msg.as_string())
+        s = (i, j, nombre, apellido, 'ok', correo1, correo2)
     except:
         smtp.close()
-        k = 0
-        s = 'Error, reintentar'
-        print(i, correo)
+        print(i, correo1)
         exit()
     return(s)
 
 
 # Obtencion de las lista de destinatarios y archivos
 # Deben estar todos dentro de la misma carpeta
-registros = pd.read_csv('path/al/archivo.csv', delimiter=';')
 
-# para testear, sobreescribe la lista registros por un dado
-# comentar para enviar el correo a los desinatarios
-# armar el diccionario con las columnas de CSV
-# dic= {
-#     'Titulo':'',
-#     'Nombre':'',
-#     'Apellido':'',
-#     'correo1': '',
-#     'correo2': ''
-#     }
-# registros=pd.DataFrame(dic,index=[0])
+registros = pd.read_csv(db_csv, delimiter=';')
 
 # Crear una instancia del servidor para envio de correo (hacerlo una sola vez)
 smtp = SMTP("smtp.office365.com", 587)
@@ -69,14 +57,16 @@ while i < j:
     k = k+1
     #apellido, nombre = str(registros.loc[i, 'nombre']).split(',')
     nombre = str(registros.loc[i, 'Nombre']).title().strip()
-    apellido = str(registros.loc[i, 'Apellido']).title().strip()
+    #apellido = str(registros.loc[i, 'Apellido']).upper().strip()
+    apellido = ''
     ### Si tiene mas de un correo, tomamos los 2 y enviamos a ambos el mensaje
     ### En el caso de q uno este vacio no se envia nada
     correo1 = str(registros.loc[i, 'correo1'])
-    if correo1 != '':
+    if correo1 != '' and correo1 != 'nan':
         correo1 = correo1.lower().strip()
     correo2 = str(registros.loc[i, 'correo2'])
-    if correo2 != '':
+    #correo2 = str('')
+    if correo2 != '' and correo2 != 'nan':
         correo2 = correo2.lower().strip()
     msg = MIMEMultipart()
     msg['Subject'] = asunto
@@ -112,13 +102,10 @@ while i < j:
     #part.add_header('Content-Disposition', 'attachment', filename="BecaYPF.png")
     #msg.attach(part)
     # Enviar el mail (o los mails) a grupos especificos
-    s1 = '()'
-    s2 = '()'
-    if correo1 != '' and correo1 != 'nan':
-        s1 = envio_correo(i, j, nombre, apellido, correo1)
-    if correo2 != '' and correo2 != 'nan':
-        s2 = envio_correo(i, j, nombre, apellido, correo2)
-    print(s1, s2)
+
+    if True:  # int(registros.loc[i, 'id_presinc']):# > 3974:
+        s = envio_correo(i, j, nombre, apellido, correo1, correo2)
+        print(s)
 
     # Cada 10 correos, reinicia la coneccion al SMTP
     if k == k_max:
